@@ -22,7 +22,9 @@ export default new Vuex.Store({
   },
   getters: {
     processedProducts: (state: any) => {
-      const index = (state.currentPage -1) * state.pageSize;
+     
+      const index = (state.currentPage-1) * state.pageSize;
+       console.log( state.pageSize );
       return state.products.slice(index, index + state.pageSize);
     },
     pageCount: (state: any) => Math.ceil(state.productsTotal/ state.pageSize)
