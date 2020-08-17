@@ -1,21 +1,21 @@
 <template>
     <div class="row mt-2">
-    <div class="col form-group">
-        <select class="form-control" v-model="pageSize" v-on:change="setPageSize(pageSize)">
-            <option value="4">4 per Page</option>
-            <option value="8">8 per Page</option>
-            <option value="12">12 per Page</option>
-        </select>
-    </div>
-    <div class="text-right col">        
-        <div class="btn-gorup mx-2">
-            <button v-for="page in pageNumbers()" :key="page" class="btn"
-                v-bind:class="{ 'btn-primary' : page == currentPage, 'btn-secondary' : page != currentPage }"
-                v-on:click="setCurrentPage(page)">
-                {{ page }}
-            </button>
-        </div>        
-    </div>  
+        <div class="col form-group">
+            <select class="form-control" v-model="pageSize" v-on:change="setPageSize(pageSize)">
+                <option value="4">4 per Page</option>
+                <option value="8">8 per Page</option>
+                <option value="12">12 per Page</option>
+            </select>
+        </div>
+        <div class="text-right col">        
+            <div class="btn-gorup mx-2">
+                <button v-for="page in pageNumbers()" :key="page" class="btn"
+                    v-bind:class="{ 'btn-primary' : page == currentPage, 'btn-secondary' : page != currentPage }"
+                    v-on:click="setCurrentPage(page)">
+                    {{ page }}
+                </button>
+            </div>        
+        </div>  
     </div>  
 </template>
 
@@ -30,7 +30,6 @@ export default class PageControls extends Vue {
     @Mutation('setCurrentPage') private setCurrentPage!: Function;
     @Mutation('setPageSize') private setPageSize!: Function;
     private pageSize = 4;
-
 
     private pageNumbers(){
         const arrLength = this.pageCount + 1;
