@@ -17,7 +17,7 @@
                 <h4 class="text-white m-2">
                     Products
                 </h4>
-                <ProductList />
+                <ProductList />                
             </div>
         </div>
     </div>
@@ -28,9 +28,10 @@
 import { Vue, Component } from 'vue-property-decorator';
 import ProductList from "@/components/ProductList.vue";
 
+
 @Component({
     components: {
-        ProductList,
+        ProductList,       
     }
 })
 export default class Store extends Vue {

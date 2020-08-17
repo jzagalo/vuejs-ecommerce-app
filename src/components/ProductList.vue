@@ -9,14 +9,19 @@
                 <div class="card-text bg-white p-1">{{ p.description }}</div>
             </h4>
         </div>
+        <PageControls />
     </div>    
 </template>
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
-import { State } from "vuex-class";
+import { State, Getter } from "vuex-class";
+import PageControls from '@/components/PageControls.vue';
 
 @Component({
+    components:{
+        PageControls, 
+    },
     filters: {
         currency(value: any){
             return new Intl.NumberFormat("en-US",
@@ -25,7 +30,7 @@ import { State } from "vuex-class";
     }
 })
 export default class ProductList extends Vue {
-    @State('products') products!: object[];
+    @Getter('processedProducts') products!: object[];
     
 }
 </script>
