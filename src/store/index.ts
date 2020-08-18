@@ -1,5 +1,10 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import Axios from "axios";
+
+const baseUrl = "http://localhost:3500";
+const productsUrl = `${baseUrl}/products`;
+const categoriesUrl = `${baseUrl}/categories`;
 
 Vue.use(Vuex)
 
@@ -15,22 +20,23 @@ for(let i = 1; i <= 10; i++){
 export default new Vuex.Store({
   strict: true,
   state: {
-    products: testData,
-    productsTotal: testData.length,
+    products: [],
+    productsTotal: 0 ,
+    categoriesData: [],
     currentPage: 1,
     pageSize: 4,
     currentCategory: "All",
   },
   getters: {
     productsFilteredByCategory: state => state.products
-      .filter(p => state.currentCategory == "All" || p.category == state.currentCategory),
+      .filter((product: any) => state.currentCategory == "All" || product.category == state.currentCategory),
     processedProducts: (state: any, getters: any) => {     
       const index = (state.currentPage-1) * state.pageSize;
       return getters.productsFilteredByCategory.slice(index, index + state.pageSize);
     },
     pageCount: (state: any, getters: any) => Math.ceil(
       getters.productsFilteredByCategory.length/ state.pageSize),
-    categories: state => ["All", ...new Set(state.products.map(p => p.category).sort())]    
+    categories: state => ["All", ...state.categoriesData]    
   },
   mutations: {
     setCurrentPage(state, page){
@@ -43,8 +49,42 @@ export default new Vuex.Store({
     setCurrentCategory(state, category){
       state.currentCategory = category;
       state.currentPage = 1;
+    },
+    setData(state, data){     
+      state.products = data.pdata;
+      state.productsTotal = data.pdata.length;
+      state.categoriesData = data.cdata.sort();
     }
   },
   actions: {
+    getData(context) {  
+      let pdata: object[] = [];
+      let cdata: object[] = [];    
+      const promise1 = new Promise((resolve, reject) => {
+        fetch(productsUrl, { method: "GET"})
+          .then(response => response.json())
+          .then(data =>{
+            pdata = [ ...data];
+            resolve(data);
+         });
+      });
+
+      const promise2 = new Promise((resolve, reject) => {
+        fetch(categoriesUrl, { method: "GET"})
+          .then(response => response.json())
+          .then(data =>{
+            cdata = [ ...data];
+            resolve(data);
+         });
+      });
+
+      Promise.all([promise1, promise2]).then(function(result) {
+        console.log(result);
+         pdata = [ ...result[0]];
+         cdata = [ ...result[1]];
+
+         context.commit("setData", { pdata, cdata });
+      });      
+    }
   }
 });

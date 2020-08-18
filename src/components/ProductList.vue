@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
-import { State, Getter } from "vuex-class";
+import { State, Getter, Action } from "vuex-class";
 import PageControls from '@/components/PageControls.vue';
 
 @Component({
@@ -31,6 +31,12 @@ import PageControls from '@/components/PageControls.vue';
 })
 export default class ProductList extends Vue {
     @Getter('processedProducts') products!: object[];
-    
+    @Action('getData') private getData!: Function;
+
+    mounted(){
+       
+        this.getData();
+    }
+  
 }
 </script>
