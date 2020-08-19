@@ -2,16 +2,14 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col bg-dark text-white">
-                <a href="" class="navbar-brand">
-                    SPORTS STORE
-                </a> 
+                <router-link to="home"> SPORTS STORE</router-link>                
             </div>
         </div>
         <div class="row">
-            <div class="col-3 bg-info p-2">
+            <div class="col-3  p-2">
                 <CategoryControls />
             </div>
-            <div class="col-9 bg-success p-2">                
+            <div class="col-9 p-2">                
                 <ProductList />                
             </div>
         </div>

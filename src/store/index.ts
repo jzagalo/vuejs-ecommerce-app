@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import Axios from "axios";
+import CartModule from '@/store/cart.js';
 
 const baseUrl = "http://localhost:3500";
 const productsUrl = `${baseUrl}/products`;
@@ -19,6 +20,9 @@ for(let i = 1; i <= 10; i++){
 
 export default new Vuex.Store({
   strict: true,
+  modules: { 
+    cart: CartModule 
+  },
   state: {
     products: [],
     productsTotal: 0 ,
@@ -57,14 +61,11 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    getData(context) {  
-      let pdata: object[] = [];
-      let cdata: object[] = [];    
+    getData(context) {          
       const promise1 = new Promise((resolve, reject) => {
         fetch(productsUrl, { method: "GET"})
           .then(response => response.json())
-          .then(data =>{
-            pdata = [ ...data];
+          .then(data =>{           
             resolve(data);
          });
       });
@@ -72,18 +73,13 @@ export default new Vuex.Store({
       const promise2 = new Promise((resolve, reject) => {
         fetch(categoriesUrl, { method: "GET"})
           .then(response => response.json())
-          .then(data =>{
-            cdata = [ ...data];
+          .then(data =>{          
             resolve(data);
          });
       });
 
       Promise.all([promise1, promise2]).then(function(result) {
-        console.log(result);
-         pdata = [ ...result[0]];
-         cdata = [ ...result[1]];
-
-         context.commit("setData", { pdata, cdata });
+         context.commit("setData", { pdata: result[0], cdata: result[1] });
       });      
     }
   }
