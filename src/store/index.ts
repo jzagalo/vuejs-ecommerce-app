@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import CartModule from '@/store/cart.js';
 import OrdersModule from '@/store/orders.js';
+import axios from 'axios';
 
 const baseUrl = "http://localhost:3500";
 const productsUrl = `${baseUrl}/products`;
@@ -29,14 +30,13 @@ for(let i = 1; i <= 10; i++){
 }
 
 type stateInterface =  {
-  products: Array<object>;
-  productsTotal: number;
   categoriesData: Array<string>;
   currentPage: number;
   pageSize: number;
   currentCategory: string;
+  pages: Array<any>;
+  serverPageCount: number;
 };
-
 
 export default new Vuex.Store({
   strict: true,
@@ -45,63 +45,88 @@ export default new Vuex.Store({
     orders: OrdersModule,
   },
   state: {
-    products: [],
-    productsTotal: 0 ,
+   // products: [],
+    //productsTotal: 0 ,
     categoriesData: [],
     currentPage: 1,
     pageSize: 4,
     currentCategory: "All",
+    pages: [],
+    serverPageCount: 0,
   },
   getters: {
-    productsFilteredByCategory: state => state.products
-      .filter((product: productInterface) => state.currentCategory == "All" || product.category == state.currentCategory),
     processedProducts: (state: stateInterface, getters: any) => {
-      const index = (state.currentPage - 1 ) * state.pageSize;
-      return getters.productsFilteredByCategory.slice(index, index + state.pageSize);
+      return state.pages[state.currentPage];
     },
-    pageCount: (state: stateInterface, getters: any) => Math.ceil(
-      getters.productsFilteredByCategory.length/ state.pageSize),
+    pageCount: (state) => state.serverPageCount,
     categories: state => ["All", ...state.categoriesData]
   },
   mutations: {
-    setCurrentPage(state, page){
+    _setCurrentPage(state, page){
       state.currentPage = page;
     },
-    setPageSize(state, size){
+    _setPageSize(state, size){
       state.pageSize = size;
       state.currentPage = 1;
     },
-    setCurrentCategory(state, category){
+    _setCurrentCategory(state, category){
       state.currentCategory = category;
       state.currentPage = 1;
     },
-    setData(state, data){
-      state.products = data.pdata;
-      state.productsTotal = data.pdata.length;
-      state.categoriesData = data.cdata.sort();
-    }
+    addPage(state, page){
+      for(let i = 0; i < page.pageCount; i++) {
+          Vue.set(state.pages, page.number + i,
+              page.data.slice(i * state.pageSize, (i * state.pageSize) + state.pageSize))
+      }
+    },
+    clearPages(state){
+      state.pages.splice(0, state.pages.length);
+    },
+    setCategories(state, categories){
+      state.categoriesData = categories;
+    },
+    setPageCount(state, count) {
+      state.serverPageCount = Math.ceil(Number(count)/ state.pageSize);
+    },
   },
   actions: {
     getData(context) {
-      const promise1 = new Promise((resolve: Function) => {
-        fetch(productsUrl, { method: "GET"})
-          .then(response => response.json())
-          .then(data =>{
-            resolve(data);
-         });
-      });
-
       const promise2 = new Promise((resolve: Function) => {
         fetch(categoriesUrl, { method: "GET"})
           .then(response => response.json())
-          .then(data =>{
-            resolve(data);
-         });
+          .then(data => resolve(data))
       });
 
-      Promise.all([promise1, promise2]).then(function(result) {
-         context.commit("setData", { pdata: result[0], cdata: result[1] });
+      Promise.resolve(promise2).then(function(result) {
+         context.dispatch("getPage", 2);
+         context.commit("setCategories", result);
       });
+    },
+    async getPage(context, getPageCount = 1){
+      let url = `${productsUrl}?_page=${context.state.currentPage}`
+                + `&_limit=${context.state.pageSize * getPageCount}`;
+      if(context.state.currentCategory != "All"){
+        url += `&category=${context.state.currentCategory}`;
+      }
+      const response = await axios.get(url);
+      context.commit("setPageCount", response.headers["x-total-count"]);
+      context.commit("addPage", { number: context.state.currentPage,
+        data: response.data, pageCount: getPageCount });
+    },
+    setCurrentPage(context, size){
+      context.commit("clearPages");
+      context.commit("_setPageSize", size);
+      context.dispatch("getPage", 2);
+    },
+    setPageSize(context, category){
+      context.commit("clearPages");
+      context.commit("_setCurrentCategory", category);
+      context.dispatch("getPage", 2);
+    },
+    setCurrentCategory(context, category){
+      context.commit('clearPages');
+      context.commit('_setCurrentCategory', category);
+      context.dispatch('getPage', 1);
     }
   }
 });

@@ -17,7 +17,7 @@
                 <span class="h4">...</span>
             </span>
             <span class="mx-1">
-                <button v-for="i in pageNumbers" v-bind:key="i"
+                <button v-for="i in pageNumbers()" v-bind:key="i"
                 class="btn btn-secpmdary"
                 v-bind:class="{ 'btn-primary': i == currentPage }"
                 v-on:click="setCurrentPage(i)">{{ i }}</button>
@@ -36,14 +36,16 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
-import { State, Getter, Mutation } from 'vuex-class';
+import { State, Getter, Mutation, Action } from 'vuex-class';
 
 @Component
 export default class PageControls extends Vue {
     @State('currentPage') private currentPage!: number;
     @Getter('pageCount') private pageCount!: number;
-    @Mutation('setCurrentPage') private setCurrentPage!: Function;
-    @Mutation('setPageSize') private setPageSize!: Function;
+   // @Mutation('_setCurrentPage') private setCurrentPage!: Function;
+   // @Mutation('_setPageSize') private setPageSize!: Function;
+    @Action('setCurrentPage') private setCurrentPage!: Function;
+    @Action('setPageSize') private setPageSize!: Function;
     private pageSize = 4;
 
     private pageNumbers(){
@@ -52,8 +54,7 @@ export default class PageControls extends Vue {
         } else if(this.currentPage <= 4 ){
             return [1, 2, 3, 4, 5];
         } else if(this.currentPage > this.pageCount - 4){
-            return [...Array(5).keys()].reverse()
-                .map(v => this.pageCount - v)
+            return [...Array(5).keys()].reverse().map(v => this.pageCount - v);
         }else {
             return [this.currentPage -1, this.currentPage, this.currentPage + 1];
         }

@@ -12,13 +12,13 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
-import { State, Getter, Mutation } from 'vuex-class';
+import { State, Getter, Action } from 'vuex-class';
 
 @Component
 export default class CategoryControls extends Vue {
     @State('currentCategory') private currentCategory!: string;
     @Getter('categories') private categories!: Array<string>;
-    @Mutation('setCurrentCategory') private setCurrentCategory!: Function;
-    
+    @Action('setCurrentCategory') private setCurrentCategory!: Function;
+
 }
 </script>
