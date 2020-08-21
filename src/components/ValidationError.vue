@@ -23,7 +23,6 @@ export default class ValidationError extends Vue {
         const messages = [];
 
         if(this.validation.$dirty){
-            console.log('validation dirty');
             if(this.hasValidationError("required")){
                 messages.push("Please enter a value");
             } else if(this.hasValidationError("minLength")){

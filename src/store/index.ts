@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import Axios from "axios";
 import CartModule from '@/store/cart.js';
 import OrdersModule from '@/store/orders.js';
 
@@ -12,15 +11,39 @@ Vue.use(Vuex)
 
 const testData = [];
 
+type productInterface = {
+  id: number;
+  name: string;
+  category: string | number;
+  description: string;
+  price: number;
+}
+
+
+
 for(let i = 1; i <= 10; i++){
   testData.push({
-    id: i, name: `Product #${i}`, category: `Category ${i % 3}`,
-    description: `This is Product #${i}`, price: `${i * 50}`   });
+    id: i,
+    name: `Product #${i}`,
+    category: `Category ${i % 3}`,
+    description: `This is Product #${i}`,
+    price: `${i * 50}`
+  });
 }
+
+type stateInterface =  {
+  products: Array<object>;
+  productsTotal: number;
+  categoriesData: Array<string>;
+  currentPage: number;
+  pageSize: number;
+  currentCategory: string;
+};
+
 
 export default new Vuex.Store({
   strict: true,
-  modules: { 
+  modules: {
     cart: CartModule,
     orders: OrdersModule,
   },
@@ -34,14 +57,14 @@ export default new Vuex.Store({
   },
   getters: {
     productsFilteredByCategory: state => state.products
-      .filter((product: any) => state.currentCategory == "All" || product.category == state.currentCategory),
-    processedProducts: (state: any, getters: any) => {     
-      const index = (state.currentPage-1) * state.pageSize;
+      .filter((product: productInterface) => state.currentCategory == "All" || product.category == state.currentCategory),
+    processedProducts: (state: stateInterface, getters: any) => {
+      const index = (state.currentPage - 1 ) * state.pageSize;
       return getters.productsFilteredByCategory.slice(index, index + state.pageSize);
     },
-    pageCount: (state: any, getters: any) => Math.ceil(
+    pageCount: (state: stateInterface, getters: any) => Math.ceil(
       getters.productsFilteredByCategory.length/ state.pageSize),
-    categories: state => ["All", ...state.categoriesData]    
+    categories: state => ["All", ...state.categoriesData]
   },
   mutations: {
     setCurrentPage(state, page){
@@ -55,33 +78,33 @@ export default new Vuex.Store({
       state.currentCategory = category;
       state.currentPage = 1;
     },
-    setData(state, data){     
+    setData(state, data){
       state.products = data.pdata;
       state.productsTotal = data.pdata.length;
       state.categoriesData = data.cdata.sort();
     }
   },
   actions: {
-    getData(context) {          
-      const promise1 = new Promise((resolve, reject) => {
+    getData(context) {
+      const promise1 = new Promise((resolve: Function) => {
         fetch(productsUrl, { method: "GET"})
           .then(response => response.json())
-          .then(data =>{           
+          .then(data =>{
             resolve(data);
          });
       });
 
-      const promise2 = new Promise((resolve, reject) => {
+      const promise2 = new Promise((resolve: Function) => {
         fetch(categoriesUrl, { method: "GET"})
           .then(response => response.json())
-          .then(data =>{          
+          .then(data =>{
             resolve(data);
          });
       });
 
       Promise.all([promise1, promise2]).then(function(result) {
          context.commit("setData", { pdata: result[0], cdata: result[1] });
-      });      
+      });
     }
   }
 });

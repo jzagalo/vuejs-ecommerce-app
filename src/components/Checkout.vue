@@ -73,7 +73,7 @@ Component.registerHooks(['validations']);
     }
 })
 export default class Checkout extends Vue  {
-    @Action('orders/storeOrder') private storeOrder!: Function;
+    @Action('storeOrder') private storeOrder!: Function;
     @Action('cart/clearCartData') private clearCart!: Function;
 
     private name = '';
@@ -81,6 +81,10 @@ export default class Checkout extends Vue  {
     private address = '';
     private city = '';
     private zip =   '';
+
+    mounted(){
+        console.log(this);
+    }
 
     validations(){
         return {
@@ -94,7 +98,7 @@ export default class Checkout extends Vue  {
 
     private async submitOrder(){
         this.$v.$touch();
-        if(! this.$v.$invalid){
+        if(! this.$v.$invalid) {
             const order = await this.storeOrder({
                 name: this.name,
                 email: this.email,
