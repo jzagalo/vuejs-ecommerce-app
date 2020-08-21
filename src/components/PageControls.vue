@@ -36,14 +36,12 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
-import { State, Getter, Mutation, Action } from 'vuex-class';
+import { State, Getter, Action } from 'vuex-class';
 
 @Component
 export default class PageControls extends Vue {
     @State('currentPage') private currentPage!: number;
     @Getter('pageCount') private pageCount!: number;
-   // @Mutation('_setCurrentPage') private setCurrentPage!: Function;
-   // @Mutation('_setPageSize') private setPageSize!: Function;
     @Action('setCurrentPage') private setCurrentPage!: Function;
     @Action('setPageSize') private setPageSize!: Function;
     private pageSize = 4;
