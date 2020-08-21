@@ -25,11 +25,11 @@
                                 Your Cart is Empty
                             </td>
                         </tr>
-                        <ShoppingCartLine v-for="line in $store.state.cart.lines" 
+                        <ShoppingCartLine v-for="line in $store.state.cart.lines"
                             :key="line.product.id"
                             :line="line"
                             @quantity="handleQuantityChange(line, $event)"
-                            @remove="remove" />                        
+                            @remove="remove" />
                     </tbody>
                     <tfoot v-if="$store.state.cart.lines.length > 0">
                         <tr>
@@ -67,18 +67,14 @@ import { State, Getter, Mutation } from "vuex-class";
     },
 })
 export default class ShoppingCart extends Vue {
-    @State("cart") private lines!: any;
+    @State("cart/lines") private lines!: any;
     @Getter('cart/totalPrice') private totalPrice!: Function;
     @Mutation('cart/changeQuantity') private change!: Function;
     @Mutation('cart/removeProduct') private remove!: Function;
 
-    mounted(){
-        console.log(this.lines);
-    }
-
     private handleQuantityChange(line: any, $event: any){
         this.change({ line, quantity: $event });
     }
-   
+
 }
 </script>

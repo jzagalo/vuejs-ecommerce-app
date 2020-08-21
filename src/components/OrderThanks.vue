@@ -16,7 +16,6 @@ import { Vue, Component } from 'vue-property-decorator';
 export default class OrderThanks extends Vue {
 
     private orderId(){
-        //console.log(this.$route);
         return this.$route.params.id;
     }
 

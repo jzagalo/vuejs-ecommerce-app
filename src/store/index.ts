@@ -10,7 +10,6 @@ const categoriesUrl = `${baseUrl}/categories`;
 Vue.use(Vuex)
 
 const testData = [];
-
 type productInterface = {
   id: number;
   name: string;
@@ -18,8 +17,6 @@ type productInterface = {
   description: string;
   price: number;
 }
-
-
 
 for(let i = 1; i <= 10; i++){
   testData.push({
