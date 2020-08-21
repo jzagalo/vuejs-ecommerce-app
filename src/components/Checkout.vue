@@ -43,7 +43,7 @@
             <input v-model="$v.zip.$model" class="form-control"  :class="{ 'is-invalid': $v.zip.$error }"/>
             <ValidationError :validation="$v.zip" />
         </div>
-    </div>    
+    </div>
     <div class="text-center">
         <router-link to="/cart" class="btn btn-secondary m-1">
             Back
@@ -52,7 +52,7 @@
             v-on:click="submitOrder">
             Place Order
         </button>
-    </div>   
+    </div>
 </div>
 </template>
 
@@ -67,20 +67,20 @@ import { Action } from "vuex-class";
 Component.registerHooks(['validations']);
 
 
-@Component({    
+@Component({
     components: {
         ValidationError,
     }
 })
 export default class Checkout extends Vue  {
-    @Action('order/storeOrder') private storeOrder!: Function;
+    @Action('orders/storeOrder') private storeOrder!: Function;
     @Action('cart/clearCartData') private clearCart!: Function;
-    
+
     private name = '';
     private email = '';
     private address = '';
     private city = '';
-    private zip =   '';    
+    private zip =   '';
 
     validations(){
         return {
@@ -90,10 +90,10 @@ export default class Checkout extends Vue  {
             city: { required },
             zip: { required, integer }
         }
-    }    
+    }
 
-    private async submitOrder(){        
-        this.$v.$touch(); 
+    private async submitOrder(){
+        this.$v.$touch();
         if(! this.$v.$invalid){
             const order = await this.storeOrder({
                 name: this.name,
@@ -103,10 +103,9 @@ export default class Checkout extends Vue  {
                 zip: this.zip,
             });
             this.clearCart();
-            console
             this.$router.push(`/thanks/${order}`);
-        }      
-    } 
+        }
+    }
 
 }
 </script>

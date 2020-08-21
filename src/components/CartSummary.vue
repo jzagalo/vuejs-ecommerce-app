@@ -6,7 +6,7 @@
                 {{ itemCount }} item(s) {{ totalPrice | currency }}
             </span>
             <span v-else>
-                (rmpty)
+                (empty)
             </span>
         </small>
         <router-link to="/cart" class="btn btn-sm bg-dark text-white"
@@ -24,6 +24,6 @@ import { Getter } from 'vuex-class';
 export default class CartSummary extends Vue {
     @Getter('cart/itemCount') private itemCount!: number;
     @Getter('cart/totalPrice') private totalPrice!: number;
-    
+
 }
 </script>
