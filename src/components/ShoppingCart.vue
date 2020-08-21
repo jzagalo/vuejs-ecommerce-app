@@ -2,7 +2,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col bg-dark text-white">
-                <a href="" class="navbar-brand">
+                <a href="/" class="navbar-brand">
                     SPORTS STORE
                 </a>
             </div>
@@ -16,7 +16,7 @@
                             <th>Quantity</th>
                             <th>Product</th>
                             <th class="text-right">Price</th>
-                             <th class="text-right">Subtotal</th>
+                            <th class="text-right">Subtotal</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -28,7 +28,7 @@
                         <ShoppingCartLine v-for="line in $store.state.cart.lines" 
                             :key="line.product.id"
                             :line="line"
-                            @quantity="handleQuantityChange(line, event)"
+                            @quantity="handleQuantityChange(line, $event)"
                             @remove="remove" />                        
                     </tbody>
                     <tfoot v-if="$store.state.cart.lines.length > 0">
@@ -67,7 +67,7 @@ import { State, Getter, Mutation } from "vuex-class";
     },
 })
 export default class ShoppingCart extends Vue {
-    @State('cart/lines') private lines!: any;
+    @State("cart") private lines!: any;
     @Getter('cart/totalPrice') private totalPrice!: Function;
     @Mutation('cart/changeQuantity') private change!: Function;
     @Mutation('cart/removeProduct') private remove!: Function;
@@ -76,10 +76,9 @@ export default class ShoppingCart extends Vue {
         console.log(this.lines);
     }
 
-    private handleQuantityChange(line: any, event: any){
-        this.change({ line, quantity: event});
+    private handleQuantityChange(line: any, $event: any){
+        this.change({ line, quantity: $event });
     }
-
    
 }
 </script>

@@ -32,10 +32,12 @@ import PageControls from '@/components/PageControls.vue';
 export default class ProductList extends Vue {
     @Getter('processedProducts') products!: object[];
     @Action('getData') private getData!: Function;
+    @Action('cart/initializeCart') private initiaizeCart!: Function;
     @Mutation('cart/addProduct') private addProduct!: Function;
 
-    mounted(){       
+    created(){       
         this.getData();
+        this.initiaizeCart(this.$store);
     }
 
     handleProductAdd(product: any){
