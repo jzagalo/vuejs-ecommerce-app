@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import CartModule from '@/store/cart.js';
 import OrdersModule from '@/store/orders.js';
 import axios from 'axios';
+import AuthModule from "@/store/auth.js";
 
 const baseUrl = "http://localhost:3500";
 const productsUrl = `${baseUrl}/products`;
@@ -45,10 +46,9 @@ export default new Vuex.Store({
   modules: {
     cart: CartModule,
     orders: OrdersModule,
+    auth: AuthModule,
   },
-  state: {
-   // products: [],
-    //productsTotal: 0 ,
+  state: {   
     categoriesData: [],
     currentPage: 1,
     pageSize: 4,
@@ -63,7 +63,10 @@ export default new Vuex.Store({
       return state.pages[state.currentPage];
     },
     pageCount: (state) => state.serverPageCount,
-    categories: state => ["All", ...state.categoriesData]
+    categories: state => ["All", ...state.categoriesData],
+    productById:(state) => (id) => {
+      return state.pages[state.currentPage].find(p =>p.id == id)
+    },
   },
   mutations: {
     _setCurrentPage(state, page){
@@ -98,6 +101,14 @@ export default new Vuex.Store({
     setSearchTerm(state, term){
       state.searchTerm = term;
       state.currentPage = 1;
+    },
+    _addProduct(state, product){
+      state.pages[state.currentPage].unshift(product);      
+    },
+    _updateProduct(state, product){
+      const page = state.pages[state.currentPage];
+      const index = page.findIndex(p => p.id == product.id);
+      Vue.set(page, index, product);
     }
   },
   actions: {
@@ -112,6 +123,22 @@ export default new Vuex.Store({
          context.dispatch("getPage", 2);
          context.commit("setCategories", result);
       });
+    },
+    async addProduct(context, product){
+      const data =(await context.getters.authenticatedAxios.post(productsUrl, product)).data;
+      product.id = data.id;
+      this.commit("_addProduct", product);
+    },
+    async removeProduct(context, product){
+      await context.getters.authenticatedAxios.
+        delete(`${productsUrl}/${product.id}`);
+        context.commit('clearPages');
+        context.dispatch("getPage", 1);
+    },
+    async updateProduct(context, product){
+      await context.getters.authenticatedAxios.
+          put(`${productsUrl}/${product.id}`, product);
+      this.commit("_updateProduct", product);
     },
     async getPage(context, getPageCount = 1){
       let url = `${productsUrl}?_page=${context.state.currentPage}`

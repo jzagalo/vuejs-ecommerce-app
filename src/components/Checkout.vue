@@ -82,10 +82,6 @@ export default class Checkout extends Vue  {
     private city = '';
     private zip =   '';
 
-    mounted(){
-        console.log(this);
-    }
-
     validations(){
         return {
             name: { required },
@@ -118,5 +114,4 @@ export default class Checkout extends Vue  {
  .is-invalid {
      border-color: #dc3545;
  }
-
 </style>

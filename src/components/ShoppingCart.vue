@@ -20,18 +20,18 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-if="$store.state.cart.lines.length == 0">
+                        <tr v-if="lines.length == 0">
                             <td colspan="4" class="text-center">
                                 Your Cart is Empty
                             </td>
                         </tr>
-                        <ShoppingCartLine v-for="line in $store.state.cart.lines"
+                        <ShoppingCartLine v-for="line in lines"
                             :key="line.product.id"
                             :line="line"
                             @quantity="handleQuantityChange(line, $event)"
                             @remove="remove" />
                     </tbody>
-                    <tfoot v-if="$store.state.cart.lines.length > 0">
+                    <tfoot v-if="lines.length > 0">
                         <tr>
                             <td colspan="3" class="text-right">Total:</td>
                             <td class="text-right">
@@ -48,7 +48,7 @@
                     Continue Shopping
                 </router-link>
                 <router-link to="/checkout" class="btn btn-primary m-1"
-                    v-bind:disabled="$store.state.cart.lines.length == 0">
+                    v-bind:disabled="lines.length == 0">
                     Checkout
                 </router-link>
             </div>
@@ -59,7 +59,9 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
 import ShoppingCartLine from '@/components/ShoppingCartLine.vue';
-import { State, Getter, Mutation } from "vuex-class";
+import { Getter, Mutation, namespace } from "vuex-class";
+
+const cartModule = namespace('cart');
 
 @Component({
     components: {
@@ -67,7 +69,8 @@ import { State, Getter, Mutation } from "vuex-class";
     },
 })
 export default class ShoppingCart extends Vue {
-    @State("cart/lines") private lines!: any;
+    @cartModule.State
+    private lines!: any;
     @Getter('cart/totalPrice') private totalPrice!: Function;
     @Mutation('cart/changeQuantity') private change!: Function;
     @Mutation('cart/removeProduct') private remove!: Function;
@@ -75,6 +78,10 @@ export default class ShoppingCart extends Vue {
     private handleQuantityChange(line: any, $event: any){
         this.change({ line, quantity: $event });
     }
+
+    mounted(){
+        console.log(this.lines);
+    }   
 
 }
 </script>
