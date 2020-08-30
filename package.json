@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "json": "json-server ./src/data.js -p 3500 -m ./src/authMiddleware.js"
+    "json": "json-server ./src/data.js -p 3500 "
   },
   "dependencies": {
     "@types/vuelidate": "^0.7.13",

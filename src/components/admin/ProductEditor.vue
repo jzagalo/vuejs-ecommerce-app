@@ -46,6 +46,7 @@
 import { Vue, Component } from 'vue-property-decorator';
 import { State, Action } from "vuex-class";
 import { required } from "vuelidate/lib/validators";
+import FormMixins from "@/mixins/form"
 
 Component.registerHooks(['validations']);
 
@@ -81,7 +82,7 @@ export default class ProductEditor extends Vue{
     }
 
     private async handleSave(){
-        this.$v.touch();
+        //this.$v.touch();
         if(!this.$v.$invalid){
             if(this.editMode()){
                 await this.updateProduct(this.product);

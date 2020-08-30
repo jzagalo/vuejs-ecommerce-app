@@ -18,7 +18,7 @@ type productInterface = {
   category: string | number;
   description: string;
   price: number;
-}
+};
 
 for(let i = 1; i <= 10; i++){
   testData.push({
@@ -59,13 +59,13 @@ export default new Vuex.Store({
     showSearch: false,
   },
   getters: {
-    processedProducts: (state: stateInterface, getters: any) => {
+    processedProducts: (state: stateInterface) => {
       return state.pages[state.currentPage];
     },
     pageCount: (state) => state.serverPageCount,
     categories: state => ["All", ...state.categoriesData],
-    productById:(state) => (id) => {
-      return state.pages[state.currentPage].find(p =>p.id == id)
+    productById:(state: any) => (id: number) => {
+      return state.pages[state.currentPage].find((p: any) =>p.id == id)
     },
   },
   mutations: {
@@ -102,12 +102,12 @@ export default new Vuex.Store({
       state.searchTerm = term;
       state.currentPage = 1;
     },
-    _addProduct(state, product){
+    _addProduct(state: any, product: any){
       state.pages[state.currentPage].unshift(product);      
     },
-    _updateProduct(state, product){
+    _updateProduct(state: any, product: any){
       const page = state.pages[state.currentPage];
-      const index = page.findIndex(p => p.id == product.id);
+      const index = page.findIndex((p: any) => p.id == product.id);
       Vue.set(page, index, product);
     }
   },

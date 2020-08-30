@@ -5,11 +5,13 @@ const ORDERS_URL = "http://localhost:3500/orders";
 
 
 export default {
+    namespace:true,
     state: {
         orders: [],
     },
     mutations: {
         setOrders(state, data){
+            console.log(data);
             state.orders = data;
         },
         changeOrderShipped(state, order){
@@ -21,9 +23,9 @@ export default {
             order.cartLines = context.rootState.cart.lines;
             return (await axios.post(ORDERS_URL, order)).data.id
         },
-        async getOrders(context){
-            context.commit("setOrders", 
-            (await context.rootGetters.authenticatedAxios.get(ORDERS_URL)).data);
+        async getOrders(context){            
+             const result = await context.rootGetters['auth/authenticatedAxios'].get(ORDERS_URL);
+             context.commit("setOrders", result.data);    
         },
         async updateOrder(context, order) {
             context.commit("changeOrderShipped", order);

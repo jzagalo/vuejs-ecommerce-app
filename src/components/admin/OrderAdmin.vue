@@ -27,10 +27,8 @@
                         {{ getTotal(entry) |c currency }} 
                     </td>
                     <td class="text-center">
-                        <button class="btn btn-sm btn-danger"
-                        @click="shipOrder(entry)">
-                        {{ entry.shipped ? 'Not Shipped' : 'Shipped' }}
-
+                        <button class="btn btn-sm btn-danger" @click="shipOrder(entry)">
+                                {{ entry.shipped ? 'Not Shipped' : 'Shipped' }}
                         </button>
                     </td>
                 </tr>
@@ -41,7 +39,7 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
-import { namespace } from 'vuex-class';
+import { namespace, Action, State } from 'vuex-class';
 
 const ordersModule = namespace("auth");
 
@@ -49,12 +47,16 @@ const ordersModule = namespace("auth");
 export default class OrderAdmin extends Vue {
     private showShipped = false;
 
-    @ordersModule.State
-    private orders!: Array<object>;
+    
+    @State('orders') private orders!: Array<object>;
     @ordersModule.Mutation
     private changeOrderShipped!: Function;
-    @ordersModule.Action
-    private getOrders!: Function;
+
+    mounted(){
+        console.log(this.displayOrders());
+    }
+    
+    @Action('getOrders') private getOrders!: Function;
     @ordersModule.Action
     private updateOrder!: Function;
 

@@ -2,7 +2,7 @@
    <div class="container-fluid">
        <div class="row">
            <div class="col bg-secondary text-white">
-               <a class="navbar-brand">SPORTS STORE</a>
+               <a href="/" class="navbar-brand">SPORTS STORE</a>
            </div>
        </div>
        <div class="row">

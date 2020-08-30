@@ -9,7 +9,8 @@ import Admin from "@/components/admin/Admin.vue";
 import ProductAdmin from "@/components/admin/ProductAdmin.vue";
 import OrderAdmin from "@/components/admin/OrderAdmin.vue";
 import dataStore from "@/store";
-import ProductEditor from "@/componets/admin/ProductEditor.vue";
+import ProductEditor from "@/components/admin/ProductEditor.vue";
+import { State, namespace } from "vuex-class";
 
 Vue.use(VueRouter)
 
@@ -20,13 +21,7 @@ Vue.use(VueRouter)
     { path: '/thanks/:id', name: 'order-thanks', component: OrderThanks },
     { path: '/login',  name: 'login', component: Authentication },
     { path: '/admin', name: 'admin',  component: Admin,
-        beforeEnter(to, from, next){          
-          if  (dataStore.state.auth.authenticated){
-              next();
-          } else{
-              next("/login")
-          }
-        },
+        
         children: [
           { path: "product/:op(create|edit)/:id(\\d+)?", 
           component: ProductEditor },
